@@ -1,20 +1,20 @@
 // Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
 
 #include "cv_camera/driver.h"
+
 #include <string>
 
 namespace
 {
 const double DEFAULT_RATE = 30.0;
 const int32_t PUBLISHER_BUFFER_SIZE = 1;
-}
+}  // namespace
 
 namespace cv_camera
 {
 
 Driver::Driver(rclcpp::Node::SharedPtr private_node, rclcpp::Node::SharedPtr camera_node)
-    : private_node_(private_node),
-      camera_node_(camera_node)
+: private_node_(private_node), camera_node_(camera_node)
 {
 }
 
@@ -33,35 +33,23 @@ void Driver::setup()
   int32_t image_width(640);
   int32_t image_height(480);
 
-  camera_.reset(new Capture(camera_node_,
-                            "image_raw",
-                            PUBLISHER_BUFFER_SIZE,
-                            frame_id));
+  camera_.reset(new Capture(camera_node_, "image_raw", PUBLISHER_BUFFER_SIZE, frame_id));
 
-  if (private_node_->get_parameter("file", file_path) && file_path != "")
-  {
+  if (private_node_->get_parameter("file", file_path) && file_path != "") {
     camera_->openFile(file_path);
-  }
-  else if (private_node_->get_parameter("device_path", device_path) && device_path != "")
-  {
+  } else if (private_node_->get_parameter("device_path", device_path) && device_path != "") {
     camera_->open(device_path);
-  }
-  else
-  {
+  } else {
     camera_->open(device_id);
   }
-  if (private_node_->get_parameter("image_width", image_width))
-  {
-    if (!camera_->setWidth(image_width))
-    {
-      RCLCPP_WARN(private_node_->get_logger(),"fail to set image_width");
+  if (private_node_->get_parameter("image_width", image_width)) {
+    if (!camera_->setWidth(image_width)) {
+      RCLCPP_WARN(private_node_->get_logger(), "fail to set image_width");
     }
   }
-  if (private_node_->get_parameter("image_height", image_height))
-  {
-    if (!camera_->setHeight(image_height))
-    {
-      RCLCPP_WARN(private_node_->get_logger(),"fail to set image_height");
+  if (private_node_->get_parameter("image_height", image_height)) {
+    if (!camera_->setHeight(image_height)) {
+      RCLCPP_WARN(private_node_->get_logger(), "fail to set image_height");
     }
   }
 
@@ -86,28 +74,25 @@ void Driver::setup()
   camera_->setPropertyFromParam(cv::CAP_PROP_ISO_SPEED, "cv_cap_prop_iso_speed");
 #ifdef CV_CAP_PROP_WHITE_BALANCE_U
   camera_->setPropertyFromParam(cv::CAP_PROP_WHITE_BALANCE_U, "cv_cap_prop_white_balance_u");
-#endif // CV_CAP_PROP_WHITE_BALANCE_U
+#endif  // CV_CAP_PROP_WHITE_BALANCE_U
 #ifdef CV_CAP_PROP_WHITE_BALANCE_V
   camera_->setPropertyFromParam(cv::CAP_PROP_WHITE_BALANCE_V, "cv_cap_prop_white_balance_v");
-#endif // CV_CAP_PROP_WHITE_BALANCE_V
+#endif  // CV_CAP_PROP_WHITE_BALANCE_V
 #ifdef CV_CAP_PROP_BUFFERSIZE
   camera_->setPropertyFromParam(cv::CAP_PROP_BUFFERSIZE, "cv_cap_prop_buffersize");
-#endif // CV_CAP_PROP_BUFFERSIZE
+#endif  // CV_CAP_PROP_BUFFERSIZE
 
   rate_.reset(new rclcpp::Rate(hz));
 }
 
 void Driver::proceed()
 {
-  if (camera_->capture())
-  {
+  if (camera_->capture()) {
     camera_->publish();
   }
   rate_->sleep();
 }
 
-Driver::~Driver()
-{
-}
+Driver::~Driver() {}
 
-} // namespace cv_camera
+}  // namespace cv_camera

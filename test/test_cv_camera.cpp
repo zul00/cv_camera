@@ -1,36 +1,26 @@
 // Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
 
+#include <gtest/gtest.h>
 #include <ros/ros.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
-#include <gtest/gtest.h>
 
 sensor_msgs::Image g_image;
 sensor_msgs::CameraInfo g_camera_info;
 
-void ImageCallback(const sensor_msgs::Image::ConstPtr &image)
-{
-  g_image = *image;
-}
+void ImageCallback(const sensor_msgs::Image::ConstPtr & image) { g_image = *image; }
 
-void InfoCallback(const sensor_msgs::CameraInfo::ConstPtr &info)
-{
-  g_camera_info = *info;
-}
+void InfoCallback(const sensor_msgs::CameraInfo::ConstPtr & info) { g_camera_info = *info; }
 
 TEST(CvCameraNode, getImage)
 {
   ros::NodeHandle node;
-  ros::Subscriber sub = node.subscribe("/cv_camera_node/image_raw",
-                                       1,
-                                       &ImageCallback);
+  ros::Subscriber sub = node.subscribe("/cv_camera_node/image_raw", 1, &ImageCallback);
   ros::Rate r(10.0);
-  while (sub.getNumPublishers() == 0)
-  {
+  while (sub.getNumPublishers() == 0) {
     r.sleep();
   }
-  while (g_image.header.frame_id == "")
-  {
+  while (g_image.header.frame_id == "") {
     ros::spinOnce();
     r.sleep();
   }
@@ -43,16 +33,12 @@ TEST(CvCameraNode, getImage)
 TEST(CvCameraNode, getCameraInfo)
 {
   ros::NodeHandle node;
-  ros::Subscriber sub = node.subscribe("/cv_camera_node/camera_info",
-                                       1,
-                                       &InfoCallback);
+  ros::Subscriber sub = node.subscribe("/cv_camera_node/camera_info", 1, &InfoCallback);
   ros::Rate r(10.0);
-  while (sub.getNumPublishers() == 0)
-  {
+  while (sub.getNumPublishers() == 0) {
     r.sleep();
   }
-  while (g_camera_info.header.frame_id == "")
-  {
+  while (g_camera_info.header.frame_id == "") {
     ros::spinOnce();
     r.sleep();
   }
@@ -77,7 +63,7 @@ TEST(CvCameraNode, getCameraInfo)
   EXPECT_EQ(2050, g_camera_info.height);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char ** argv)
 {
   ros::init(argc, argv, "test_cv_camera");
   testing::InitGoogleTest(&argc, argv);

@@ -3,16 +3,17 @@
 #ifndef CV_CAMERA_CAPTURE_H
 #define CV_CAMERA_CAPTURE_H
 
-#include "cv_camera/exception.h"
-#include <string>
-
-#include <rclcpp/rclcpp.hpp>
+#include <camera_info_manager/camera_info_manager.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include <sensor_msgs/msg/camera_info.hpp>
-#include <sensor_msgs/image_encodings.hpp>
+
 #include <opencv2/highgui/highgui.hpp>
-#include <camera_info_manager/camera_info_manager.h>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/image_encodings.hpp>
+#include <sensor_msgs/msg/camera_info.hpp>
+#include <string>
+
+#include "cv_camera/exception.h"
 
 /**
  * @brief namespace of this package
@@ -35,10 +36,9 @@ public:
    * @param buffer_size size of publisher buffer.
    * @param frame_id frame_id of publishing messages.
    */
-  Capture(rclcpp::Node::SharedPtr node,
-          const std::string &topic_name,
-          uint32_t buffer_size,
-          const std::string &frame_id);
+  Capture(
+    rclcpp::Node::SharedPtr node, const std::string & topic_name, uint32_t buffer_size,
+    const std::string & frame_id);
 
   /**
    * @brief Open capture device with device ID.
@@ -55,7 +55,7 @@ public:
    * @param device_path path of the camera device
    * @throw cv_camera::DeviceError device open failed
    */
-  void open(const std::string &device_path);
+  void open(const std::string & device_path);
 
   /**
    * @brief Load camera info from file.
@@ -76,7 +76,7 @@ public:
   /**
    * @brief open video file instead of capture device.
    */
-  void openFile(const std::string &file_path);
+  void openFile(const std::string & file_path);
 
   /**
    * @brief capture an image and store.
@@ -99,10 +99,7 @@ public:
    *
    * @return CameraInfo
    */
-  inline const sensor_msgs::msg::CameraInfo &getInfo() const
-  {
-    return info_;
-  }
+  inline const sensor_msgs::msg::CameraInfo & getInfo() const { return info_; }
 
   /**
    * @brief accessor of cv::Mat
@@ -111,10 +108,7 @@ public:
    *
    * @return captured cv::Mat
    */
-  inline const cv::Mat &getCvImage() const
-  {
-    return bridge_.image;
-  }
+  inline const cv::Mat & getCvImage() const { return bridge_.image; }
 
   /**
    * @brief accessor of ROS Image message.
@@ -132,25 +126,19 @@ public:
    * @brief try capture image width
    * @return true if success
    */
-  inline bool setWidth(int32_t width)
-  {
-    return cap_.set(cv::CAP_PROP_FRAME_WIDTH, width);
-  }
+  inline bool setWidth(int32_t width) { return cap_.set(cv::CAP_PROP_FRAME_WIDTH, width); }
 
   /**
    * @brief try capture image height
    * @return true if success
    */
-  inline bool setHeight(int32_t height)
-  {
-    return cap_.set(cv::CAP_PROP_FRAME_HEIGHT, height);
-  }
+  inline bool setHeight(int32_t height) { return cap_.set(cv::CAP_PROP_FRAME_HEIGHT, height); }
 
   /**
    * @brief set CV_PROP_*
    * @return true if success
    */
-  bool setPropertyFromParam(int property_id, const std::string &param_name);
+  bool setPropertyFromParam(int property_id, const std::string & param_name);
 
 private:
   /**
@@ -220,6 +208,6 @@ private:
   rclcpp::Duration capture_delay_;
 };
 
-} // namespace cv_camera
+}  // namespace cv_camera
 
-#endif // CV_CAMERA_CAPTURE_H
+#endif  // CV_CAMERA_CAPTURE_H

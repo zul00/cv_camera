@@ -15,7 +15,7 @@ namespace cv_camera
  */
 class Driver
 {
- public:
+public:
   /**
    * @brief construct with ROS node handles.
    *
@@ -25,8 +25,7 @@ class Driver
    * @param private_node node for getting parameters.
    * @param camera_node node for publishing.
    */
-  Driver(rclcpp::Node::SharedPtr private_node,
-         rclcpp::Node::SharedPtr camera_node);
+  Driver(rclcpp::Node::SharedPtr private_node, rclcpp::Node::SharedPtr camera_node);
   ~Driver();
 
   /**
@@ -39,7 +38,8 @@ class Driver
    * @brief Capture, publish and sleep
    */
   void proceed();
- private:
+
+private:
   /**
    * @brief ROS private node for getting ROS parameters.
    */

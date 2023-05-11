@@ -15,9 +15,8 @@ namespace cv_camera
  */
 class DeviceError : public std::runtime_error
 {
- public:
-  explicit DeviceError(const std::string &cause):
-      std::runtime_error(cause) {}
+public:
+  explicit DeviceError(const std::string & cause) : std::runtime_error(cause) {}
 };
 
 }  // end namespace cv_camera
